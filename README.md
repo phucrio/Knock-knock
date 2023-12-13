@@ -202,6 +202,7 @@ Bây giờ tải exp.tfc lên máy mục tiêu và khai thác
 ![image](https://hackmd.io/_uploads/SyIiwl18T.png)
 
 Lấy được flag
+
 ![image](https://hackmd.io/_uploads/r1P2wgJLa.png)
 
 
