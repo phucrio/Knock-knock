@@ -161,6 +161,7 @@ Hoặc gửi từ máy mục tiêu scp tfc kali@192.168.18.145:tfc
 
 
 Dùng gdb phân tích
+
 ![image](https://hackmd.io/_uploads/B1a0Ue18T.png)
 
 Tại sao ở đây là 0x0675c916 mà không phải  là 0x41414141? 
